@@ -4,16 +4,21 @@
 #include <cstdlib>
 #include <ctime>
 #include <random>
+#include <string.h>
+#include <Windows.h>
 
 using namespace std;
 
 struct Jucator{
 	char nume[20];
-	int bani;
-	int mana;
-	int pariu;
+	int bani=0;
+	int mana=0;
+	int pariu=0;
 
 };
+
+Jucator totiJucatorii[1000];
+int nrJucatori = 0;
 
 char *tipuriCarti[] = { "2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K", "A" };
 
@@ -24,6 +29,90 @@ int transformaCarte(int carte)
 	else if (carte == 12)
 		return 11;
 	else return 10;
+}
+
+Jucator login()
+{
+realege:
+	system("cls");
+	cout << "----------ULTIMATE BLACKJACK----------" << endl << endl;
+	cout << "LOGIN WITH A NEW USERNAME (1)" << endl << endl;
+	cout << "LOGIN WITH A EXISTING USERNAME (2)" << endl << endl;
+	cout << "SEE ALL FORMER PLAYERS (3)" << endl << endl;
+	int x = 0,index;
+	cin >> x;
+	system("cls");
+	if (x == 1)
+	{
+		cout << "Nume: ";
+		cin >> totiJucatorii[++nrJucatori].nume;
+		cout << endl << "Bani: ";
+		cin >> totiJucatorii[nrJucatori].bani;
+		system("cls");
+		return totiJucatorii[nrJucatori];
+
+	}
+	else
+	if (x == 2)
+	{
+		char numeNou[20];
+		cout << "Nume: ";
+		cin >> numeNou;
+		for (index = 1; index <= nrJucatori; index++)
+		if (strcmp(numeNou, totiJucatorii[index].nume) == 0)
+			return totiJucatorii[index];
+		cout << "Nu ati introdus un nume care sa fie deja folosit! Va rugam alegeti alta optiune!"<<endl;
+		Sleep(3000);
+		system("cls");
+		goto realege;
+	}
+	else
+	if (x == 3)
+	{
+		cout << "ALL FORMER PLAYERS" << endl << endl;
+		if (nrJucatori == 0)
+			cout << "Nu exista alti jucatori" << endl;
+		else
+		for (index = 1; index <= nrJucatori; index++)
+			cout<<totiJucatorii[index].nume << " " << totiJucatorii[index].bani << endl;
+		cout << endl<<endl;
+		cout << "BACK(1)"<<endl;
+		while (x != 1)
+		{
+			cin >> x;
+			if (x==1)
+				goto realege;
+			cout << "Date de intrare gresite! Va rog incercati din nou!" << endl;
+		}
+
+	}
+	else
+	{
+		cout << "Date de intrare gresite! Va rog incercati din nou!" << endl;
+		cin >> x;
+		goto realege;
+	}
+}
+
+void jucatorVsJucator()
+{
+	Jucator jucator1, jucator2;
+	jucator1 = login();
+	jucator2 = login();
+	system("cls");
+
+}
+
+void startJoc()
+{
+	cout << "Jucator vs Jucator (1)" << endl << endl;
+	cout << "Jucator vs Calculator (2)" << endl << endl;
+	int x;
+	cin >> x;
+	if (x == 1)
+	{
+		jucatorVsJucator();
+	}
 }
 
 void joc()
@@ -216,6 +305,7 @@ void meniu()
 
 int main()
 {
+	jucatorVsJucator();
 	meniu();
 
 }
