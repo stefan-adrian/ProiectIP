@@ -1,4 +1,4 @@
-
+﻿
 #include "stdafx.h"
 #include <iostream>
 #include <cstdlib>
@@ -7,8 +7,15 @@
 
 using namespace std;
 
-char *tipuriCarti[] = { "2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K", "A" };
+struct Jucator{
+	char nume[20];
+	int bani;
+	int mana;
+	int pariu;
 
+};
+
+char *tipuriCarti[] = { "2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K", "A" };
 
 int transformaCarte(int carte)
 {
@@ -26,10 +33,12 @@ void joc()
 	do
 	{
 
-		cout << "----------BLACKJACK----------" << endl << endl;
+		cout << "----------ULTIMATE BLACKJACK----------" << endl << endl;
 		cout << "Ai cartile:" << endl;
-		int primaCarte = 12, aDouaCarte = (rand() % 13), suma = 0, apare = 0;
-		if (primaCarte == 12 || aDouaCarte == 12)
+		int primaCarte = (rand() % 13), aDouaCarte = (rand() % 13), suma = 0, apare = 0;
+		if (primaCarte == 12)
+			apare++;
+		if (aDouaCarte == 12)
 			apare++;
 		suma = transformaCarte(primaCarte) + transformaCarte(aDouaCarte);
 		cout << tipuriCarti[primaCarte] << " " << tipuriCarti[aDouaCarte] << endl;
@@ -68,7 +77,9 @@ void joc()
 		cout << endl;
 		cout << "Casa are cartile:" << endl;
 		int primaCarteCasa = (rand() % 13), aDouaCarteCasa = (rand() % 13), sumaCasa = 0, apareCasa = 0;
-		if (primaCarteCasa == 12 || aDouaCarteCasa == 12)
+		if (primaCarteCasa == 12)
+			apareCasa++;
+		if (aDouaCarteCasa == 12)
 			apareCasa++;
 		sumaCasa = transformaCarte(primaCarteCasa) + transformaCarte(aDouaCarteCasa);
 		cout << tipuriCarti[primaCarteCasa] << " " << tipuriCarti[aDouaCarteCasa] << endl;
@@ -108,10 +119,104 @@ void joc()
 	
 }
 
+void reguli()
+{
+	cout << "----------ULTIMATE BLACKJACK----------" << endl << endl;
+	cout << "Blackjack, cunoscut si sub numele de 21,  este un joc des intalnit in cazinouri. Jocul a castigat popularitate deoarece este usor de jucat, jucatorul ce are suma cartilor 21 sau cel mai aproape de 21 castiga. Jocul se va juca cu un numar   nelimitat de carti. "<<endl<<endl;
+	cout << "Valoarea cartilor: cartile intre 2 si 10 au valoarea scrise pe ele, figurile au valoarea 10, asul poate fi 1 sau 11 dupa preferinta jucatorului." << endl<<endl;
+	cout << "Derularea jocului: Calculatorul (casa) va primi 2 carti, dintre care se vede doar 1. Fiecare jucator primeste initial 2 carti ce vor fi afisate tuturor participantilor la joc. Dupa impartire fiecare jucator are sansa de a avea suma cartilor 21, sau cat mai aproape dupa cum urmeaza." << endl << endl;
+	cout << "Decizia jucatorului: Dupa impartirea cartilor jucatorul poate alege intre 4 optiuni standard: hit, stand, split, double down. " << endl;
+	cout << "HIT: mai iau o carte" << endl;
+	cout << "STAND: nu mai iau carte" << endl;
+	cout << "DOUBLE DOWN: dublez miza, iau doar 1 singura carte" << endl;
+	cout << "SPLIT: optiune folosita cand jucatorul are cele 2 carti primite de aceeasi valoare, jucatorul formand cate o mana pe    fiecare carte, cele 2 maini se joaca apoi dupa regulile standard(se poate face doar pe cartile primite initial)" << endl<<endl;
+	cout << "Decizia casei:" << endl;
+	cout << "SOFT 17: Cand suma cartilor dealerului este sub 17, acesta trebuie sa mai traga o carte. Daca suma este 17 sau mai mare dealerul nu mai are voie la o alta carte." << endl;
+	cout << "BLACKJACK: Daca un jucator are din impartirea cartilor suma 21 primeste de la casa (3:2)x valoarea pariului." << endl;
+	cout << "In cazul in care jucatorul are valoare cartilor cat are casa,casa castiga!" << endl << endl;
+
+}
+
+void meniu()
+{
+	start:
+	cout << "----------ULTIMATE BLACKJACK----------" << endl << endl;
+	cout << "START GAME (1)"<<endl<<endl;
+	cout << "REGULI (2)" << endl<<endl;
+	cout << "EXIT (3)"<<endl<<endl;
+	int x;
+	cin >> x;
+	incercareNoua:
+	if (x == 1)
+	{
+		system("cls");
+		joc();
+		system("cls");
+		cout << "BACK TO MAIN MENU (1)"<<endl;
+		cout << "EXIT (2)" << endl;
+		cin >> x;
+		repetaCiclu:
+		if (x == 1)
+		{
+			system("cls");
+			goto start;
+		}
+		else
+		if (x == 2)
+			goto end;
+		else
+		{
+			cout << "Date de intrare gresite! Va rog incercati din nou!" << endl;
+			cin >> x;
+			goto repetaCiclu;
+		}
+
+	}
+	else
+	if (x == 2)
+	{
+		system("cls");
+		reguli();
+		cout << "BACK (1)" << endl;
+		cout << "EXIT (2)" << endl;
+		int x;
+		cin >> x;
+		repeta:
+		if (x == 1)
+		{
+			system("cls");
+			goto start;
+		}
+		else
+		if (x == 2)
+			goto end;
+		else
+		{
+			cout << "Date de intrare gresite! Va rog incercati din nou!" << endl;
+			cin >> x;
+			goto repeta;
+		}
+	}
+	else
+	if (x == 3)
+	{
+		system("cls");
+		goto end;
+	}
+	else
+	{
+		cout << "Date de intrare gresite! Va rog incercati din nou!" << endl;
+		cin >> x;
+		goto incercareNoua;
+	}
+	end:
+	system("cls");
+	cout << "GAME OVER!" << endl;
+}
+
 int main()
 {
-	joc();
-	cout << "GAME OVER" << endl;
+	meniu();
 
 }
 
