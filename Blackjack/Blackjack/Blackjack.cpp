@@ -6,6 +6,7 @@
 #include <random>
 #include <string.h>
 #include <Windows.h>
+#include <fstream>
 
 using namespace std;
 
@@ -41,9 +42,9 @@ realege:
 	cout << "SEE ALL FORMER PLAYERS (3)" << endl << endl;
 	int x = 0,index;
 	cin >> x;
-	system("cls");
 	if (x == 1)
 	{
+		system("cls");
 		cout << "Nume: ";
 		cin >> totiJucatorii[++nrJucatori].nume;
 		cout << endl << "Bani: ";
@@ -55,6 +56,7 @@ realege:
 	else
 	if (x == 2)
 	{
+		system("cls");
 		char numeNou[20];
 		cout << "Nume: ";
 		cin >> numeNou;
@@ -69,6 +71,7 @@ realege:
 	else
 	if (x == 3)
 	{
+		system("cls");
 		cout << "ALL FORMER PLAYERS" << endl << endl;
 		if (nrJucatori == 0)
 			cout << "Nu exista alti jucatori" << endl;
@@ -287,110 +290,222 @@ void jucatorVsJucator()
 
 }
 
-void startJoc()
+void jucatorVsCalculator()
 {
-	cout << "----------ULTIMATE BLACKJACK----------" << endl << endl;
-	cout << "Jucator vs Jucator (1)" << endl << endl;
-	cout << "Jucator vs Calculator (2)" << endl << endl;
-	int x;
-	cin >> x;
-	if (x == 1)
-	{
-		jucatorVsJucator();
-	}
-}
-
-void joc()
-{
+	int jucator;
+	jucator = login();
+	system("cls");
 	srand(time(0));
 	int contor = 0;
 	do
 	{
-
 		cout << "----------ULTIMATE BLACKJACK----------" << endl << endl;
-		cout << "Ai cartile:" << endl;
-		int primaCarte = (rand() % 13), aDouaCarte = (rand() % 13), suma = 0, apare = 0;
-		if (primaCarte == 12)
-			apare++;
-		if (aDouaCarte == 12)
-			apare++;
-		suma = transformaCarte(primaCarte) + transformaCarte(aDouaCarte);
-		cout << tipuriCarti[primaCarte] << " " << tipuriCarti[aDouaCarte] << endl;
-		cout << "Apasati h pentru a primi o carte sau s pentru a sta" << endl;
-		char tasta;
-		cin >> tasta;
-		while (tasta != 's')
-		{
-			int nouaCarte = (rand() % 13);
-			if (nouaCarte == 12)
-				apare++;
-			suma = suma + transformaCarte(nouaCarte);
-			cout << tipuriCarti[nouaCarte] << endl;
-			if (suma == 21)
-				tasta = 's';
-			else if (suma > 21)
-			{
-				if (apare != 0)
-				{
-					suma = suma - 10;
-					apare--;
-					goto continuare;
-				}
-				else
-				{
-					cout << "Ai pierdut!" << endl;
-					goto next;
-				}
-			}
-			else {
-			continuare:
-				cout << "Apasati h pentru a primi o carte sau s pentru a sta" << endl;
-				cin >> tasta;
-			}
-		}
+		int primaCarteCasa = (rand() % 13);
+		cout << "Cartea pe fata a casei este : " << tipuriCarti[primaCarteCasa] << endl<<endl;
+		cout << totiJucatorii[jucator].nume << "'s turn" << endl << endl;
+		cout << "Bani= " << totiJucatorii[jucator].bani << "   " << "Pariu= ";
+		cin >> totiJucatorii[jucator].pariu;
+		totiJucatorii[jucator].bani -= totiJucatorii[jucator].pariu;
 		cout << endl;
+		int primaCarte = (rand() % 13), aDouaCarte = (rand() % 13), as = 0;
+		if (primaCarte == 12)
+			as++;
+		if (aDouaCarte == 12)
+			as++;
+		totiJucatorii[jucator].sumaCarti = transformaCarte(primaCarte) + transformaCarte(aDouaCarte);
+		if (totiJucatorii[jucator].sumaCarti > 21 && as != 0)
+		{
+			totiJucatorii[jucator].sumaCarti -= 10;
+			as--;
+		}
+		char *cartiJucator[50];
+		int nr = -1;
+		cartiJucator[++nr] = tipuriCarti[primaCarte];
+		cartiJucator[++nr] = tipuriCarti[aDouaCarte];
+		cout << "INFO : Hit (h), Stand (s), Double (d) " << endl;
+		cout << totiJucatorii[jucator].nume << "'s hand" << endl;
+		int index;
+		for (index = 0; index <= nr; index++)
+			cout << cartiJucator[index] << " ";
+		cout << "   Suma carti = " << totiJucatorii[jucator].sumaCarti << "  Bani = " << totiJucatorii[jucator].bani <<"   Pariu= "<<totiJucatorii[jucator].pariu<< endl;
+		if (totiJucatorii[jucator].sumaCarti == 21)
+		{
+			cout << "BLACKJACK! Ai castigat!" << endl;
+			totiJucatorii[jucator].bani += (totiJucatorii[jucator].pariu + totiJucatorii[jucator].pariu / 2);
+			goto sfarsit;
+		}
+		char tasta;
+		int nouaCarte;
+		int ok = 0;
+	continuare:
+		cin >> tasta;
+		if (tasta == 'd'&&ok==0)
+		{
+			nouaCarte = (rand() % 13);
+			if (nouaCarte == 12)
+				as++;
+			totiJucatorii[jucator].sumaCarti += transformaCarte(nouaCarte);
+			cartiJucator[++nr] = tipuriCarti[nouaCarte];
+			while (totiJucatorii[jucator].sumaCarti > 21 && as > 0)
+			{
+				totiJucatorii[jucator].sumaCarti -= 10;
+				as--;
+			}
+			for (index = 0; index <= nr; index++)
+				cout << cartiJucator[index] << " ";
+			totiJucatorii[jucator].bani -= totiJucatorii[jucator].pariu;
+			totiJucatorii[jucator].pariu *= 2;
+			cout << "   Suma carti = " << totiJucatorii[jucator].sumaCarti << "  Bani = " << totiJucatorii[jucator].bani << "   Pariu= " << totiJucatorii[jucator].pariu << endl;
+			ok = 1;
+		}
+		else
+		if (tasta == 'h')
+		{
+			nouaCarte = (rand() % 13);
+			if (nouaCarte == 12)
+				as++;
+			totiJucatorii[jucator].sumaCarti += transformaCarte(nouaCarte);
+			cartiJucator[++nr] = tipuriCarti[nouaCarte];
+			while (totiJucatorii[jucator].sumaCarti > 21 && as > 0)
+			{
+				totiJucatorii[jucator].sumaCarti -= 10;
+				as--;
+			}
+			for (index = 0; index <= nr; index++)
+				cout << cartiJucator[index] << " ";
+			cout << "   Suma carti = " << totiJucatorii[jucator].sumaCarti << "  Bani = " << totiJucatorii[jucator].bani << "   Pariu= " << totiJucatorii[jucator].pariu << endl;
+			if (totiJucatorii[jucator].sumaCarti > 21)
+			{
+				goto end;
+			}
+			goto continuare;
+
+		}
+		else
+		if (tasta == 's')
+		{
+			goto end;
+		}
+		else
+		{
+			cout << "Ati introdus o valoare incorecta! Va rog incercati din nou! " << endl;
+			goto continuare;
+		}
+	end:
+		if (totiJucatorii[jucator].sumaCarti > 21)
+		{
+			cout << "BUSTED! Ai pierdut!"<<endl;
+			goto sfarsit;
+		}
+
+
 		cout << "Casa are cartile:" << endl;
-		int primaCarteCasa = (rand() % 13), aDouaCarteCasa = (rand() % 13), sumaCasa = 0, apareCasa = 0;
+		int aDouaCarteCasa = (rand() % 13), sumaCasa = 0, apareCasa = 0;
 		if (primaCarteCasa == 12)
 			apareCasa++;
 		if (aDouaCarteCasa == 12)
 			apareCasa++;
 		sumaCasa = transformaCarte(primaCarteCasa) + transformaCarte(aDouaCarteCasa);
-		cout << tipuriCarti[primaCarteCasa] << " " << tipuriCarti[aDouaCarteCasa] << endl;
+		if (apareCasa != 0 && sumaCasa>21)
+		{
+			sumaCasa = sumaCasa - 10;
+			apareCasa--;
+		}
+		char *cartiCasa[50];
+		int nrCarti = -1;
+		cartiCasa[++nrCarti] = tipuriCarti[primaCarteCasa];
+		cartiCasa[++nrCarti] = tipuriCarti[aDouaCarteCasa];
+		for (index = 0; index <= nrCarti; index++)
+			cout << cartiCasa[index] << " ";
+		cout << "   Suma casa="<<sumaCasa<<endl;
 		while (sumaCasa<17)
 		{
 			int nouaCarte = (rand() % 13);
 			if (nouaCarte == 12)
 				apareCasa++;
 			sumaCasa = sumaCasa + transformaCarte(nouaCarte);
-			cout << tipuriCarti[nouaCarte] << endl;
+			cartiCasa[++nrCarti] = tipuriCarti[nouaCarte];
+			if (apareCasa != 0)
+			{
+				while (apareCasa != 0 && sumaCasa>21)
+				{
+					sumaCasa = sumaCasa - 10;
+					apareCasa--;
+					if (sumaCasa <= 21)
+					{
+						for (index = 0; index <= nrCarti; index++)
+							cout << cartiCasa[index] << " ";
+						cout << "   Suma casa=" << sumaCasa << endl;
+						goto continuareCasa;
+					}
+				}
+			}
+			for (index = 0; index <= nrCarti; index++)
+				cout << cartiCasa[index] << " ";
+			cout << "   Suma casa=" << sumaCasa << endl;
 			if (sumaCasa>21)
 			{
 				if (apareCasa != 0)
 				{
-					sumaCasa = sumaCasa - 10;
-					apareCasa--;
-					goto continuareCasa;
+					while (apareCasa != 0 && sumaCasa>21)
+					{
+						sumaCasa = sumaCasa - 10;
+						apareCasa--;
+						if (sumaCasa<=21)
+						goto continuareCasa;
+					}
 				}
 				else
 				{
-					cout << "Ai castigat!" << endl;
-					goto next;
+					cout << "Casa a depasit 21! Ai castigat!" << endl;
+					totiJucatorii[jucator].bani += totiJucatorii[jucator].pariu * 2;
+					goto sfarsit;
 				}
 			}
 		continuareCasa:;
 		}
-		if (suma > sumaCasa)
+		if (totiJucatorii[jucator].sumaCarti > sumaCasa)
+		{
 			cout << "Ai castigat!" << endl;
+			totiJucatorii[jucator].bani += totiJucatorii[jucator].pariu * 2;
+		}
 		else
+		{
 			cout << "Ai pierdut!" << endl;
 
-	next:
-		cout << "Pentru a mai juca un joc apasati 1 sau 2 in caz contrar" << endl;
+		}
+
+	sfarsit:
+		cout << "PLAY AGAIN (1)" << endl;
+		cout << "END THIS GAME (2)" << endl;
 		cin >> contor;
 		system("cls");
+
 	} while (contor == 1);
-	
+}
+
+void startJoc()
+{
+	cout << "----------ULTIMATE BLACKJACK----------" << endl << endl;
+	cout << "Jucator vs Jucator (1)" << endl << endl;
+	cout << "Jucator vs Calculator (2)" << endl << endl;
+	int x;
+	inceput:
+	cin >> x;
+	if (x == 1)
+	{
+		jucatorVsJucator();
+	}
+	else
+	if (x == 2)
+	{
+		jucatorVsCalculator();
+	}
+	else
+	{
+		cout << "Ati introdus o valoare incorecta! Va rugam incercati din nou! " << endl;
+		goto inceput;
+	}
 }
 
 void reguli()
@@ -429,7 +544,7 @@ void meniu()
 		cout << "BACK TO MAIN MENU (1)"<<endl;
 		cout << "EXIT (2)" << endl;
 		cin >> x;
-		repetaCiclu:
+	repetaCiclu:
 		if (x == 1)
 		{
 			system("cls");
@@ -484,6 +599,11 @@ void meniu()
 		goto incercareNoua;
 	}
 	end:
+	ofstream afiseaza("Jucatori.txt");
+	int index;
+	for (index = 1; index <= nrJucatori; index++)
+		afiseaza << totiJucatorii[index].nume << " " << totiJucatorii[index].bani << endl;
+	afiseaza.close();
 	system("cls");
 	cout << "GAME OVER!" << endl;
 }
