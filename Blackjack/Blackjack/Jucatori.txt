@@ -1,1 +1,6 @@
-Adi 900
+Adi 3000 
+Stefan 4000 
+Dan 5098 
+Vlad 6000 
+Player 11000 
+adi 1200 

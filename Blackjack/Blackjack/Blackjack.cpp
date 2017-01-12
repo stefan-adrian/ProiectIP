@@ -8,6 +8,7 @@
 #include <Windows.h>
 #include <fstream>
 #include <cmath>
+#include <stdio.h>
 
 using namespace std;
 
@@ -239,7 +240,7 @@ alegeBani:
 		int nr = -1;
 		cartiJucator1[++nr] = tipuriCarti[primaCarte];
 		cartiJucator1[++nr] = tipuriCarti[aDouaCarte];
-		cout << "INFO : Hit (h), Stand (s), Double (d) " << endl;
+		cout << "INFO : Hit (h), Stand (s) " << endl;
 		cout << totiJucatorii[jucator1].nume << "'s hand" << endl;
 		int index;
 		for (index = 0; index <= nr; index++)
@@ -250,23 +251,6 @@ alegeBani:
 		int bust1 = 0, bust2 = 0;
 		continuare:
 		cin >> tasta;
-		if (verificareInput(tasta,'d'))
-		{
-			nouaCarte = (rand() % 13);
-			if (nouaCarte == 12)
-				as++;
-			totiJucatorii[jucator1].sumaCarti += transformaCarte(nouaCarte);
-			cartiJucator1[++nr] = tipuriCarti[nouaCarte];
-			while (totiJucatorii[jucator1].sumaCarti > 21 && as > 0)
-			{
-				totiJucatorii[jucator1].sumaCarti -= 10;
-				as--;
-			}
-			for (index = 0; index <= nr; index++)
-				cout << cartiJucator1[index] << " ";
-			cout << "   Suma carti = " << totiJucatorii[jucator1].sumaCarti << "  Bani = " << totiJucatorii[jucator1].bani << endl;
-		}
-		else
 		if (verificareInput(tasta, 'h'))
 		{
 			nouaCarte = (rand() % 13);
@@ -322,30 +306,13 @@ alegeBani:
 		nr = -1;
 		cartiJucator2[++nr] = tipuriCarti[primaCarte];
 		cartiJucator2[++nr] = tipuriCarti[aDouaCarte];
-		cout << "INFO : Hit (h), Stand (s), Double (d) " << endl;
+		cout << "INFO : Hit (h), Stand (s) " << endl;
 		cout << totiJucatorii[jucator2].nume << "'s hand" << endl;
 		for (index = 0; index <= nr; index++)
 			cout << cartiJucator2[index] << " ";
 		cout << "   Suma carti = " << totiJucatorii[jucator2].sumaCarti << "  Bani = " << totiJucatorii[jucator2].bani << endl;
 		continuare2:
 		cin >> tasta;
-		if (verificareInput(tasta, 'd'))
-		{
-			nouaCarte = (rand() % 13);
-			if (nouaCarte == 12)
-				as++;
-			totiJucatorii[jucator2].sumaCarti += transformaCarte(nouaCarte);
-			cartiJucator2[++nr] = tipuriCarti[nouaCarte];
-			while (totiJucatorii[jucator2].sumaCarti > 21 && as > 0)
-			{
-				totiJucatorii[jucator2].sumaCarti -= 10;
-				as--;
-			}
-			for (index = 0; index <= nr; index++)
-				cout << cartiJucator2[index] << " ";
-			cout << "   Suma carti = " << totiJucatorii[jucator2].sumaCarti << "  Bani = " << totiJucatorii[jucator2].bani << endl;
-		}
-		else
 		if (verificareInput(tasta, 'h'))
 		{
 			nouaCarte = (rand() % 13);
@@ -652,6 +619,15 @@ void jucatorVsCalculator()
 	} while (verificareInput(contor,'1'));
 }
 
+void afiseazaFisier()
+{
+	ofstream afiseaza("Jucatori.txt");
+	int index;
+	for (index = 1; index <= nrJucatori; index++)
+		afiseaza << totiJucatorii[index].nume << " " << totiJucatorii[index].bani << " " << endl;
+	afiseaza.close();
+}
+
 void startJoc()
 {
 	cout << "----------ULTIMATE BLACKJACK----------" << endl << endl;
@@ -663,11 +639,13 @@ void startJoc()
 	if (verificareInput(x,'1'))
 	{
 		jucatorVsJucator();
+		afiseazaFisier();
 	}
 	else
 	if (verificareInput(x, '2'))
 	{
 		jucatorVsCalculator();
+		afiseazaFisier();
 	}
 	else
 	{
@@ -694,8 +672,24 @@ void reguli()
 
 }
 
+void citesteFisierul()
+{
+	char nume[100],bani[100];
+	ifstream citeste("Jucatori.txt");
+	while (citeste >> nume)
+	{
+		citeste >> bani;
+		nrJucatori++;
+		strcpy_s(totiJucatorii[nrJucatori].nume, nume);
+		totiJucatorii[nrJucatori].bani = convertFromCharToInt(bani);
+	}
+	citeste.close();
+	
+}
+
 void meniu()
 {
+	citesteFisierul();
 	start:
 	cout << "----------ULTIMATE BLACKJACK----------" << endl << endl;
 	cout << "START GAME (1)"<<endl<<endl;
@@ -767,11 +761,7 @@ void meniu()
 		goto incercareNoua;
 	}
 	end:
-	ofstream afiseaza("Jucatori.txt");
-	int index;
-	for (index = 1; index <= nrJucatori; index++)
-		afiseaza << totiJucatorii[index].nume << " " << totiJucatorii[index].bani << endl;
-	afiseaza.close();
+	afiseazaFisier();
 	system("cls");
 	cout << "GAME OVER!" << endl;
 }
