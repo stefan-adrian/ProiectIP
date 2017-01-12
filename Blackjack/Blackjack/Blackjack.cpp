@@ -40,7 +40,6 @@ int verificareInput(char sir[], char c)
 	return 0;
 }
 
-
 int convertFromCharToInt(char sir[])
 {
 	int numar = 0,index;
@@ -80,11 +79,22 @@ realege:
 	if (verificareInput(x,'1'))
 	{
 		system("cls");
+		alegeJucator:
 		cout << "Nume: ";
 		cin >> totiJucatorii[++nrJucatori].nume;
+		int ok = 1;
+		for (index = 1; index < nrJucatori&&ok==1; index++)
+		if (strcmp(totiJucatorii[nrJucatori].nume, totiJucatorii[index].nume) == 0)
+			ok = 0;
+		if (ok == 0)
+		{
+			nrJucatori--;
+			cout << "Usernameul cu care vreti sa va logati a fost deja folosit!Va rugam incercati alt username!" << endl;
+			goto alegeJucator;
+		}
 		char bani[100];
 		alegeBani:
-		cout << endl << "Bani: ";
+		cout << "Bani: ";
 		cin >> bani;
 		if (checkIfNumber(bani) == 0)
 		{
@@ -110,12 +120,38 @@ realege:
 	if (verificareInput(x, '2'))
 	{
 		system("cls");
+		int locatie = 0;
 		char numeNou[20];
 		cout << "Nume: ";
 		cin >> numeNou;
-		for (index = 1; index <= nrJucatori; index++)
+		for (index = 1; index <= nrJucatori&&locatie==0; index++)
 		if (strcmp(numeNou, totiJucatorii[index].nume) == 0)
-			return index;
+			locatie = index;
+		if (totiJucatorii[locatie].bani == 0)
+		{
+			cout << "Jucatorul cu care v-ati logat a ramas fara bani!Va rugam reintroduceti suma cu care vreti sa jucati!" << endl;
+			char bani[100];
+		alegeBani2:
+			cout << "Bani: ";
+			cin >> bani;
+			if (checkIfNumber(bani) == 0)
+			{
+				cout << "Nu ati introdus un numar valid!Va rugam incercati din nou!" << endl;
+				goto alegeBani2;
+			}
+			else
+			if (strlen(bani) > 6)
+			{
+				cout << "Valoare de bani introdusa este prea mare!Va rugam incercati din nou!" << endl;
+				goto alegeBani2;
+			}
+			else
+			{
+				totiJucatorii[locatie].bani = convertFromCharToInt(bani);
+			}
+		}
+		if (locatie != 0)
+			return locatie;
 		cout << "Nu ati introdus un nume care sa fie deja folosit! Va rugam alegeti alta optiune!"<<endl;
 		Sleep(3000);
 		system("cls");
@@ -175,6 +211,11 @@ alegeBani:
 	else
 	{
 		pariu = convertFromCharToInt(bani);
+	}
+	if (pariu > totiJucatorii[jucator1].bani || pariu > totiJucatorii[jucator2].bani)
+	{
+		cout << "Suma pentru care vreti sa jucati este prea mare pentru unul dintre jucatori!Incercati sa introduceti alt pariu!" << endl;
+		goto alegeBani;
 	}
 	system("cls");
 	srand(time(0));
@@ -348,7 +389,7 @@ alegeBani:
 		if (totiJucatorii[jucator1].sumaCarti == totiJucatorii[jucator2].sumaCarti)
 			cout << "Ambii jucatori au acelasi scor deci este egalitate!" << endl << endl;
 		else
-		if ((bust1 == 0 && bust2 == 1) || totiJucatorii[jucator1].sumaCarti > totiJucatorii[jucator2].sumaCarti)
+		if ((bust1 == 0 && bust2 == 1) || (totiJucatorii[jucator1].sumaCarti > totiJucatorii[jucator2].sumaCarti&&bust1==0))
 		{
 			cout << totiJucatorii[jucator1].nume << " a castigat!" << endl << endl;
 			totiJucatorii[jucator1].bani = totiJucatorii[jucator1].bani + pariu;
@@ -361,10 +402,23 @@ alegeBani:
 			totiJucatorii[jucator1].bani = totiJucatorii[jucator1].bani - pariu;
 			totiJucatorii[jucator2].bani = totiJucatorii[jucator2].bani + pariu;
 		}
+		int test = 0;
+		if (pariu > totiJucatorii[jucator1].bani || pariu > totiJucatorii[jucator2].bani)
+		{
+			test = 1;
+			cout << "Unul dintre jucatori nu mai are bani necesari pentru pariu deci nu mai puteti juca alt joc!" << endl;
+			goto sfarsit;
+		}
 
 		cout << "PLAY AGAIN (1)" << endl;
 		cout << "END THIS GAME (2)" << endl;
 		cin >> contor;
+	sfarsit:
+		if (test == 1)
+		{
+			contor[0] = '2';
+			Sleep(4000);
+		}
 		system("cls");
 	} while ((verificareInput(contor, '1')));
 
@@ -402,6 +456,11 @@ void jucatorVsCalculator()
 		{
 			totiJucatorii[jucator].pariu = convertFromCharToInt(bani);
 		}
+		if (totiJucatorii[jucator].pariu > totiJucatorii[jucator].bani)
+		{
+			cout << "Nu aveti indeajunsi bani pentru a face un pariu asa de mare!Va rugam sa introduceti o suma mai mica!" << endl;
+			goto alegeBani;
+		}
 		totiJucatorii[jucator].bani -= totiJucatorii[jucator].pariu;
 		cout << endl;
 		int primaCarte = (rand() % 13), aDouaCarte = (rand() % 13), as = 0;
@@ -438,6 +497,11 @@ void jucatorVsCalculator()
 		cin >> tasta;
 		if (verificareInput(tasta,'d')&&ok==0)
 		{
+			if (totiJucatorii[jucator].pariu > totiJucatorii[jucator].bani)
+			{
+				cout << "Nu aveti indeajunsi bani pentru a selecta optiunea double!Va rugam selecatati alta optiune!" << endl;
+				goto continuare;
+			}
 			nouaCarte = (rand() % 13);
 			if (nouaCarte == 12)
 				as++;
@@ -571,11 +635,18 @@ void jucatorVsCalculator()
 			cout << "Ai pierdut!" << endl;
 
 		}
-
 	sfarsit:
+		if (totiJucatorii[jucator].bani == 0)
+		{
+			cout << "Ati ramas fara bani!Nu mai puteti continua jocul!" << endl;
+			contor[0] = '2';
+			Sleep(4000);
+			goto final;
+		}
 		cout << "PLAY AGAIN (1)" << endl;
 		cout << "END THIS GAME (2)" << endl;
 		cin >> contor;
+	final:
 		system("cls");
 
 	} while (verificareInput(contor,'1'));
