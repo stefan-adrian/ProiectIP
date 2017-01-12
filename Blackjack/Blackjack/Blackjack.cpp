@@ -25,6 +25,50 @@ int nrJucatori = 0;
 
 char *tipuriCarti[] = { "2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K", "A" };
 
+int deck[20];
+
+void creareDeck()
+{
+	int index;
+	for (index = 0; index <= 12; index++)
+		deck[index] = 8;
+}
+
+int alegeCarte(int nr)
+{
+	int index,verificare=0;
+	for (index = 0; index <= 12; index++)
+		if (deck[index] != 0)
+			verificare = 1;
+	if (verificare==0)
+		creareDeck();
+	if (deck[nr] != 0)
+	{
+		deck[nr]--;
+		return nr;
+	}
+	int valoare;
+	valoare = rand() % 2;
+	if (valoare == 0)
+		valoare = -1;
+	while (deck[nr] == 0)
+	{
+		if (nr == 12&&valoare==1)
+			nr = 0;
+		else
+		if (nr == 0 && valoare == -1)
+			nr = 12;
+		else
+			nr = nr + valoare;;
+		if (deck[nr] != 0)
+		{
+			deck[nr]--;
+			return nr;
+		}
+	}
+
+}
+
 int transformaCarte(int carte)
 {
 	if (carte <= 8)
@@ -187,6 +231,15 @@ realege:
 	}
 }
 
+void afiseazaFisier()
+{
+	ofstream afiseaza("Jucatori.txt");
+	int index;
+	for (index = 1; index <= nrJucatori; index++)
+		afiseaza << totiJucatorii[index].nume << " " << totiJucatorii[index].bani << " " << endl;
+	afiseaza.close();
+}
+
 void jucatorVsJucator()
 {
 	int jucator1, jucator2;
@@ -225,7 +278,7 @@ alegeBani:
 	{
 		cout << "----------ULTIMATE BLACKJACK----------" << endl << endl;
 		cout << totiJucatorii[jucator1].nume << "'s turn" << endl << endl;
-		int primaCarte = (rand() % 13), aDouaCarte = (rand() % 13), as = 0;
+		int primaCarte = alegeCarte(rand() % 13), aDouaCarte = alegeCarte(rand() % 13), as = 0;
 		if (primaCarte == 12)
 			as++;
 		if (aDouaCarte == 12)
@@ -253,7 +306,7 @@ alegeBani:
 		cin >> tasta;
 		if (verificareInput(tasta, 'h'))
 		{
-			nouaCarte = (rand() % 13);
+			nouaCarte = alegeCarte(rand() % 13);
 			if (nouaCarte == 12)
 				as++;
 			totiJucatorii[jucator1].sumaCarti += transformaCarte(nouaCarte);
@@ -289,8 +342,8 @@ alegeBani:
 		system("cls");
 		cout << "----------ULTIMATE BLACKJACK----------" << endl << endl;
 		cout << totiJucatorii[jucator2].nume << "'s turn" << endl << endl;
-		primaCarte = (rand() % 13);
-		aDouaCarte = (rand() % 13);
+		primaCarte = alegeCarte(rand() % 13);
+		aDouaCarte = alegeCarte(rand() % 13);
 		as = 0;
 		if (primaCarte == 12)
 			as++;
@@ -315,7 +368,7 @@ alegeBani:
 		cin >> tasta;
 		if (verificareInput(tasta, 'h'))
 		{
-			nouaCarte = (rand() % 13);
+			nouaCarte = alegeCarte(rand() % 13);
 			if (nouaCarte == 12)
 				as++;
 			totiJucatorii[jucator2].sumaCarti += transformaCarte(nouaCarte);
@@ -386,6 +439,7 @@ alegeBani:
 			contor[0] = '2';
 			Sleep(4000);
 		}
+		afiseazaFisier();
 		system("cls");
 	} while ((verificareInput(contor, '1')));
 
@@ -400,8 +454,9 @@ void jucatorVsCalculator()
 	char contor[100];
 	do
 	{
+		int ok = 0;
 		cout << "----------ULTIMATE BLACKJACK----------" << endl << endl;
-		int primaCarteCasa = (rand() % 13);
+		int primaCarteCasa = alegeCarte(rand() % 13);
 		cout << "Cartea pe fata a casei este : " << tipuriCarti[primaCarteCasa] << endl<<endl;
 		cout << totiJucatorii[jucator].nume << "'s turn" << endl << endl;
 		cout << "Bani= " << totiJucatorii[jucator].bani << "   " << "Pariu= ";
@@ -430,7 +485,7 @@ void jucatorVsCalculator()
 		}
 		totiJucatorii[jucator].bani -= totiJucatorii[jucator].pariu;
 		cout << endl;
-		int primaCarte = (rand() % 13), aDouaCarte = (rand() % 13), as = 0;
+		int primaCarte = alegeCarte(rand() % 13), aDouaCarte = alegeCarte(rand() % 13), as = 0;
 		if (primaCarte == 12)
 			as++;
 		if (aDouaCarte == 12)
@@ -459,7 +514,6 @@ void jucatorVsCalculator()
 		}
 		char tasta[100];
 		int nouaCarte;
-		int ok = 0;
 	continuare:
 		cin >> tasta;
 		if (verificareInput(tasta,'d')&&ok==0)
@@ -469,7 +523,7 @@ void jucatorVsCalculator()
 				cout << "Nu aveti indeajunsi bani pentru a selecta optiunea double!Va rugam selecatati alta optiune!" << endl;
 				goto continuare;
 			}
-			nouaCarte = (rand() % 13);
+			nouaCarte = alegeCarte(rand() % 13);
 			if (nouaCarte == 12)
 				as++;
 			totiJucatorii[jucator].sumaCarti += transformaCarte(nouaCarte);
@@ -489,7 +543,7 @@ void jucatorVsCalculator()
 		else
 		if (verificareInput(tasta, 'h'))
 		{
-			nouaCarte = (rand() % 13);
+			nouaCarte = alegeCarte(rand() % 13);
 			if (nouaCarte == 12)
 				as++;
 			totiJucatorii[jucator].sumaCarti += transformaCarte(nouaCarte);
@@ -528,7 +582,7 @@ void jucatorVsCalculator()
 
 
 		cout << "Casa are cartile:" << endl;
-		int aDouaCarteCasa = (rand() % 13), sumaCasa = 0, apareCasa = 0;
+		int aDouaCarteCasa = alegeCarte(rand() % 13), sumaCasa = 0, apareCasa = 0;
 		if (primaCarteCasa == 12)
 			apareCasa++;
 		if (aDouaCarteCasa == 12)
@@ -548,7 +602,7 @@ void jucatorVsCalculator()
 		cout << "   Suma casa="<<sumaCasa<<endl;
 		while (sumaCasa<17)
 		{
-			int nouaCarte = (rand() % 13);
+			int nouaCarte = alegeCarte(rand() % 13);
 			if (nouaCarte == 12)
 				apareCasa++;
 			sumaCasa = sumaCasa + transformaCarte(nouaCarte);
@@ -614,18 +668,10 @@ void jucatorVsCalculator()
 		cout << "END THIS GAME (2)" << endl;
 		cin >> contor;
 	final:
+		afiseazaFisier();
 		system("cls");
 
 	} while (verificareInput(contor,'1'));
-}
-
-void afiseazaFisier()
-{
-	ofstream afiseaza("Jucatori.txt");
-	int index;
-	for (index = 1; index <= nrJucatori; index++)
-		afiseaza << totiJucatorii[index].nume << " " << totiJucatorii[index].bani << " " << endl;
-	afiseaza.close();
 }
 
 void startJoc()
@@ -657,14 +703,13 @@ void startJoc()
 void reguli()
 {
 	cout << "----------ULTIMATE BLACKJACK----------" << endl << endl;
-	cout << "Blackjack, cunoscut si sub numele de 21,  este un joc des intalnit in cazinouri. Jocul a castigat popularitate deoarece este usor de jucat, jucatorul ce are suma cartilor 21 sau cel mai aproape de 21 castiga. Jocul se va juca cu un numar   nelimitat de carti. "<<endl<<endl;
+	cout << "Blackjack, cunoscut si sub numele de 21,  este un joc des intalnit in cazinouri. Jocul a castigat popularitate deoarece este usor de jucat, jucatorul ce are suma cartilor 21 sau cel mai aproape de 21 castiga. Jocul se va juca cu 2 pachete  de carti. "<<endl<<endl;
 	cout << "Valoarea cartilor: cartile intre 2 si 10 au valoarea scrise pe ele, figurile au valoarea 10, asul poate fi 1 sau 11 dupa preferinta jucatorului." << endl<<endl;
 	cout << "Derularea jocului: Calculatorul (casa) va primi 2 carti, dintre care se vede doar 1. Fiecare jucator primeste initial 2 carti ce vor fi afisate tuturor participantilor la joc. Dupa impartire fiecare jucator are sansa de a avea suma cartilor 21, sau cat mai aproape dupa cum urmeaza." << endl << endl;
 	cout << "Decizia jucatorului: Dupa impartirea cartilor jucatorul poate alege intre 4 optiuni standard: hit, stand, split, double down. " << endl;
 	cout << "HIT: mai iau o carte" << endl;
 	cout << "STAND: nu mai iau carte" << endl;
-	cout << "DOUBLE DOWN: dublez miza, iau doar 1 singura carte" << endl;
-	cout << "SPLIT: optiune folosita cand jucatorul are cele 2 carti primite de aceeasi valoare, jucatorul formand cate o mana pe    fiecare carte, cele 2 maini se joaca apoi dupa regulile standard(se poate face doar pe cartile primite initial)" << endl<<endl;
+	cout << "DOUBLE DOWN: dublez miza, iau doar 1 singura carte" << endl<<endl;
 	cout << "Decizia casei:" << endl;
 	cout << "SOFT 17: Cand suma cartilor dealerului este sub 17, acesta trebuie sa mai traga o carte. Daca suma este 17 sau mai mare dealerul nu mai are voie la o alta carte." << endl;
 	cout << "BLACKJACK: Daca un jucator are din impartirea cartilor suma 21 primeste de la casa (3:2)x valoarea pariului." << endl;
@@ -770,4 +815,3 @@ int main()
 {
 	meniu();
 }
-

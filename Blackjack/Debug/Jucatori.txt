@@ -1,4 +1,4 @@
-Adi 0 
+Adi 109000 
 Stefan 7000 
 Vlad 55000 
 Ion 7000 

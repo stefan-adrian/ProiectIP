@@ -1,5 +1,5 @@
-Adi 3000 
-Stefan 4000 
+Adi 0 
+Stefan 3200 
 Dan 5098 
 Vlad 6000 
 Player 11000 

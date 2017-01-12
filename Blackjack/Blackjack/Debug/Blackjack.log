@@ -1,9 +1,21 @@
-﻿Build started 12.01.2017 21:01:46.
+﻿Build started 12.01.2017 22:48:26.
      1>Project "C:\Users\stefa\Desktop\ProiectIP-Ultima versiune\Blackjack\Blackjack\Blackjack.vcxproj" on node 2 (Build target(s)).
-     1>Link:
+     1>ClCompile:
+         C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\CL.exe /c /ZI /nologo /W3 /WX- /sdl /Od /Oy- /D WIN32 /D _DEBUG /D _CONSOLE /D _LIB /D _UNICODE /D UNICODE /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Yu"stdafx.h" /Fp"Debug\Blackjack.pch" /Fo"Debug\\" /Fd"Debug\vc120.pdb" /Gd /TP /analyze- /errorReport:prompt Blackjack.cpp
+         Blackjack.cpp
+     1>c:\users\stefa\desktop\proiectip-ultima versiune\blackjack\blackjack\blackjack.cpp(91): warning C4018: '<' : signed/unsigned mismatch
+     1>c:\users\stefa\desktop\proiectip-ultima versiune\blackjack\blackjack\blackjack.cpp(92): warning C4244: '=' : conversion from 'double' to 'int', possible loss of data
+     1>c:\users\stefa\desktop\proiectip-ultima versiune\blackjack\blackjack\blackjack.cpp(107): warning C4018: '<' : signed/unsigned mismatch
+     1>c:\users\stefa\desktop\proiectip-ultima versiune\blackjack\blackjack\blackjack.cpp(275): warning C4244: 'argument' : conversion from 'time_t' to 'unsigned int', possible loss of data
+     1>c:\users\stefa\desktop\proiectip-ultima versiune\blackjack\blackjack\blackjack.cpp(453): warning C4244: 'argument' : conversion from 'time_t' to 'unsigned int', possible loss of data
+     1>c:\users\stefa\desktop\proiectip-ultima versiune\blackjack\blackjack\blackjack.cpp(70): warning C4715: 'alegeCarte' : not all control paths return a value
+     1>c:\users\stefa\desktop\proiectip-ultima versiune\blackjack\blackjack\blackjack.cpp(232): warning C4715: 'login' : not all control paths return a value
+       Link:
+         C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"C:\Users\stefa\Desktop\ProiectIP-Ultima versiune\Blackjack\Debug\Blackjack.exe" /INCREMENTAL /NOLOGO kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"C:\Users\stefa\Desktop\ProiectIP-Ultima versiune\Blackjack\Debug\Blackjack.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"C:\Users\stefa\Desktop\ProiectIP-Ultima versiune\Blackjack\Debug\Blackjack.lib" /MACHINE:X86 Debug\Blackjack.obj
+         Debug\stdafx.obj
          Blackjack.vcxproj -> C:\Users\stefa\Desktop\ProiectIP-Ultima versiune\Blackjack\Debug\Blackjack.exe
      1>Done Building Project "C:\Users\stefa\Desktop\ProiectIP-Ultima versiune\Blackjack\Blackjack\Blackjack.vcxproj" (Build target(s)).
 
 Build succeeded.
 
-Time Elapsed 00:00:00.30
+Time Elapsed 00:00:01.50
